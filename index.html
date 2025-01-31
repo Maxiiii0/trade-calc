@@ -7,7 +7,7 @@
 
     <meta
       name="description"
-      content="Calculate your trading profits easily with this simple trading profit calculator. Enter buy price, sell price, and number of shares to calculate your profit."
+      content="Calculate your trading profits easily with this simple trading profit calculator. Enter buy price, sell price, and number of shares or capital to calculate your profit."
     />
     <meta
       name="keywords"
@@ -112,12 +112,42 @@
         font-size: 12px;
         color: #777;
       }
+
+      .toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .toggle label {
+        font-size: 14px;
+        color: #555;
+      }
+
+      .toggle select {
+        padding: 5px;
+        font-size: 14px;
+      }
+      #calcType {
+        scale: 0.8;
+        border: none;
+        box-shadow: 0px 0px 1px 1px gray;
+        border-radius: 0.5rem;
+      }
     </style>
   </head>
   <body>
     <div class="container">
       <h1>Profit Calculator</h1>
       <form class="form" onsubmit="calculateProfit(event)">
+        <div class="toggle">
+          <label for="calcType">Calculation by</label>
+          <select id="calcType" onchange="toggleInputs()">
+            <option value="shares">Shares</option>
+            <option value="capital">Capital</option>
+          </select>
+        </div>
+
         <label for="buyPrice">Buy Price (₹):</label>
         <input
           type="number"
@@ -125,6 +155,7 @@
           placeholder="Enter Buy Price"
           step="0.01"
         />
+
         <label for="sellPrice">Sell Price (₹):</label>
         <input
           type="number"
@@ -132,15 +163,29 @@
           placeholder="Enter Sell Price"
           step="0.01"
         />
-        <label for="shares">Number of Shares:</label>
+
+        <label for="shares" id="sharesLabel">Number of Shares:</label>
         <input
           type="number"
           id="shares"
           placeholder="Enter Number of Shares"
           min="1"
         />
+
+        <label for="capital" id="capitalLabel" style="display: none"
+          >Investment Capital (₹):</label
+        >
+        <input
+          type="number"
+          id="capital"
+          placeholder="Enter Investment Capital"
+          min="1"
+          style="display: none"
+        />
+
         <button type="submit">Calculate Profit</button>
       </form>
+
       <div class="result">
         <p id="profitResult">Profit: ₹0</p>
         <p id="errorMessage" class="error"></p>
@@ -157,6 +202,26 @@
     </div>
 
     <script>
+      function toggleInputs() {
+        const calcType = document.getElementById("calcType").value;
+        const sharesInput = document.getElementById("shares");
+        const capitalInput = document.getElementById("capital");
+        const sharesLabel = document.getElementById("sharesLabel");
+        const capitalLabel = document.getElementById("capitalLabel");
+
+        if (calcType === "shares") {
+          sharesInput.style.display = "block";
+          sharesLabel.style.display = "block";
+          capitalInput.style.display = "none";
+          capitalLabel.style.display = "none";
+        } else {
+          sharesInput.style.display = "none";
+          sharesLabel.style.display = "none";
+          capitalInput.style.display = "block";
+          capitalLabel.style.display = "block";
+        }
+      }
+
       function calculateProfit(e) {
         e.preventDefault();
 
@@ -164,22 +229,33 @@
         const sellPrice = parseFloat(
           document.getElementById("sellPrice").value
         );
-        const shares = parseInt(document.getElementById("shares").value);
+        const calcType = document.getElementById("calcType").value;
+        let shares = parseInt(document.getElementById("shares").value);
+        let capital = parseFloat(document.getElementById("capital").value);
 
         if (
           isNaN(buyPrice) ||
           isNaN(sellPrice) ||
-          isNaN(shares) ||
+          (calcType === "shares" && isNaN(shares)) ||
+          (calcType === "capital" && isNaN(capital)) ||
           buyPrice <= 0 ||
           sellPrice <= 0 ||
-          shares <= 0
+          (calcType === "shares" && shares <= 0) ||
+          (calcType === "capital" && capital <= 0)
         ) {
           alert("Please enter valid numbers for all fields.");
           return;
         }
 
-        const profitPerShare = sellPrice - buyPrice;
-        const totalProfit = profitPerShare * shares;
+        let profitPerShare = sellPrice - buyPrice;
+        let totalProfit;
+
+        if (calcType === "shares") {
+          totalProfit = profitPerShare * shares;
+        } else {
+          const sharesBought = capital / buyPrice;
+          totalProfit = (sellPrice - buyPrice) * sharesBought;
+        }
 
         document.getElementById(
           "profitResult"
@@ -193,6 +269,9 @@
 
         document.getElementById("errorMessage").innerText = "";
       }
+
+      // Initialize the form with default view (by shares)
+      window.onload = toggleInputs;
     </script>
   </body>
 </html>
