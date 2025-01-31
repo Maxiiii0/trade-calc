@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trading Profit Calculator</title>
+
+    <meta
+      name="description"
+      content="Calculate your trading profits easily with this simple trading profit calculator. Enter buy price, sell price, and number of shares to calculate your profit."
+    />
+    <meta
+      name="keywords"
+      content="profit calculator, trading, shares, stock profit, investment calculator"
+    />
+    <meta name="author" content="Sooraj Rao" />
+
+    <meta property="og:title" content="Trading Profit Calculator" />
+    <meta
+      property="og:description"
+      content="Calculate your trading profits easily with this simple trading profit calculator."
+    />
+    <meta property="og:url" content="https://soorajrao.in" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://soorajrao.in/home.webp" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Trading Profit Calculator" />
+    <meta
+      name="twitter:description"
+      content="Calculate your trading profits easily with this simple trading profit calculator."
+    />
+    <meta name="twitter:image" content="https://soorajrao.in/home.webp" />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f8f9fa;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+
+      .container {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        width: 320px;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 24px;
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      .form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      label {
+        font-size: 14px;
+        color: #555;
+      }
+
+      input {
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        outline: none;
+      }
+
+      button {
+        padding: 10px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      button:hover {
+        background-color: #218838;
+      }
+
+      .result {
+        margin-top: 20px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      .error {
+        color: red;
+      }
+
+      .developer {
+        margin-top: 50px;
+        font-size: 12px;
+        color: #777;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Profit Calculator</h1>
+      <form class="form" onsubmit="calculateProfit(event)">
+        <label for="buyPrice">Buy Price (₹):</label>
+        <input
+          type="number"
+          id="buyPrice"
+          placeholder="Enter Buy Price"
+          step="0.01"
+        />
+        <label for="sellPrice">Sell Price (₹):</label>
+        <input
+          type="number"
+          id="sellPrice"
+          placeholder="Enter Sell Price"
+          step="0.01"
+        />
+        <label for="shares">Number of Shares:</label>
+        <input
+          type="number"
+          id="shares"
+          placeholder="Enter Number of Shares"
+          min="1"
+        />
+        <button type="submit">Calculate Profit</button>
+      </form>
+      <div class="result">
+        <p id="profitResult">Profit: ₹0</p>
+        <p id="errorMessage" class="error"></p>
+      </div>
+
+      <div class="developer">
+        <p>
+          Developed by
+          <a href="https://soorajrao.in?ref=Profit Calculator" target="_blank"
+            >Sooraj Rao</a
+          >
+        </p>
+      </div>
+    </div>
+
+    <script>
+      function calculateProfit(e) {
+        e.preventDefault();
+
+        const buyPrice = parseFloat(document.getElementById("buyPrice").value);
+        const sellPrice = parseFloat(
+          document.getElementById("sellPrice").value
+        );
+        const shares = parseInt(document.getElementById("shares").value);
+
+        if (
+          isNaN(buyPrice) ||
+          isNaN(sellPrice) ||
+          isNaN(shares) ||
+          buyPrice <= 0 ||
+          sellPrice <= 0 ||
+          shares <= 0
+        ) {
+          alert("Please enter valid numbers for all fields.");
+          return;
+        }
+
+        const profitPerShare = sellPrice - buyPrice;
+        const totalProfit = profitPerShare * shares;
+
+        document.getElementById(
+          "profitResult"
+        ).innerText = `Profit: ₹${totalProfit.toFixed(2)}`;
+
+        if (totalProfit < 0) {
+          document.getElementById("profitResult").style.color = "red";
+        } else {
+          document.getElementById("profitResult").style.color = "#333";
+        }
+
+        document.getElementById("errorMessage").innerText = "";
+      }
+    </script>
+  </body>
+</html>
