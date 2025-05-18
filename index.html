@@ -256,21 +256,17 @@
           const sharesBought = capital / buyPrice;
           totalProfit = (sellPrice - buyPrice) * sharesBought;
         }
-
+        const result = totalProfit > 0 ? "Profit" : "Loss";
         document.getElementById(
           "profitResult"
-        ).innerText = `Profit: ₹${totalProfit.toFixed(2)}`;
+        ).innerText = `${result}: ₹${totalProfit.toFixed(2)}`;
 
-        if (totalProfit < 0) {
-          document.getElementById("profitResult").style.color = "red";
-        } else {
-          document.getElementById("profitResult").style.color = "#333";
-        }
+        document.getElementById("profitResult").style.color =
+          totalProfit > 0 ? "green" : "red";
 
         document.getElementById("errorMessage").innerText = "";
       }
 
-      // Initialize the form with default view (by shares)
       window.onload = toggleInputs;
     </script>
   </body>
